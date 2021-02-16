@@ -19,7 +19,12 @@ const project = new AwsCdkTypeScriptApp({
   // Not using github - however enable it to see example of build workflow for CDK
   buildWorkflow: false,
   mergify: false,
-  buildWorkflow: false
+  buildWorkflow: false,
+  context: {
+    '@aws-cdk/core:newStyleStackSynthesis': true,
+    '@aws-cdk/core:enableStackNameDuplicates': true,
+    'aws-cdk:enableDiffNoFail': true
+  }
 });
 
 project.synth();
