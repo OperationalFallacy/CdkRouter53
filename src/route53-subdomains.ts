@@ -22,7 +22,7 @@ export class SubdomainsStack extends Stack {
     const parentZone = new PublicHostedZone(this, 'HostedZone', {
       zoneName: zone.zoneName,
       // A principal which is trusted to assume a role for zone delegation
-      crossAccountZoneDelegationPrincipal: new AccountPrincipal('116907314417'),
+      crossAccountZoneDelegationPrincipal: new AccountPrincipal('138847631892'),
       comment: 'Parent zone for ' + zone.zoneName
     });
 
