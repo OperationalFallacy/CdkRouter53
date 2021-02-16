@@ -1,7 +1,8 @@
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as actions from '@aws-cdk/aws-codepipeline-actions';
 import * as cdk from '@aws-cdk/core';
-import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
+import { CdkPipeline, CdkStage, SimpleSynthAction } from '@aws-cdk/pipelines';
+import { SubdomainStage } from './app-stages';
 
 export interface PipelineStackProps extends cdk.StackProps {
   name: string;
@@ -37,7 +38,40 @@ export class PipelineStack extends cdk.Stack {
       })
     })
     
-    console.log(pipeline)
+    const CreateSubDomains = pipeline.addStage('SubDomains');
+    const devapp = new SubdomainStage(this, 'dev', {
+      env: { 
+        region: 'us-east-1',
+        account: '164411640669' 
+      }
+    },
+    {
+      stacksettings: {
+        environment: 'dev'
+      }
+    });
+
+    const prodapp = new SubdomainStage(this, 'prod', {
+      env: { 
+        region: 'us-east-1',
+        account: '116907314417' 
+      }
+    },
+    {
+      stacksettings: {
+        environment: 'prod'
+      }
+    });
+
+    function RunNextActionInParallel(s: CdkStage) {
+      let currentRunOrder = s.nextSequentialRunOrder(0)
+      s.nextSequentialRunOrder(1-currentRunOrder)
+    }
+
+    CreateSubDomains.addApplication(devapp);
+    RunNextActionInParallel(CreateSubDomains);
+    CreateSubDomains.addApplication(prodapp);
+    RunNextActionInParallel(CreateSubDomains);
 
   }
 }
