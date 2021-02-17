@@ -37,14 +37,17 @@ export class PipelineStack extends cdk.Stack {
         }
       })
     })
+
+    const CreateDelegationRole = pipeline.addStage('RoleDelegation')
     
-    new DelegationRoleStage(this, 'prod', {
+    const prod_delegation_app = new DelegationRoleStage(this, 'Delegation', {
       env: {
         region: 'us-east-1',
-        account: '116907314417'
+        account: '208334959160'
       }
-    }
-    );
+    });
+
+    CreateDelegationRole.addApplication(prod_delegation_app);
 
     const CreateSubDomains = pipeline.addStage('SubDomains');
     const devapp = new SubdomainStage(this, 'dev', {

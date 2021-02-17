@@ -24,7 +24,7 @@ export class SubdomainsStack extends Stack {
 
     new CrossAccountZoneDelegationRecord(this, 'delegate', {
       delegatedZone: subZone,
-      parentHostedZoneId: 'Z006778233ZGTMJWA18NL',
+      parentHostedZoneId: 'Z00775473R1PDFS2LSXJT',
       // The delegation role in the parent account
       delegationRole: delegationRole
     });
@@ -37,7 +37,7 @@ export class DelegationRoleStack extends Stack {
     super(scope, id, props);
 
     const zone = PublicHostedZone.fromLookup(this, 'zone', {
-      domainName: "naumenko.ca"
+      domainName: "dns.naumenko.ca"
     });
 
     // This creates a new boundary
