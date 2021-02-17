@@ -16,7 +16,7 @@ export class SubdomainsStack extends Stack {
 
     // different account
     const subZone = new PublicHostedZone(this, 'SubZone', {
-      zoneName: stackconfig?.stacksettings?.environment! + 'naumenko.ca',
+      zoneName: stackconfig?.stacksettings?.environment! + '.naumenko.ca',
       comment: 'Hosted zone for ' + stackconfig?.stacksettings?.environment!
     });
     
