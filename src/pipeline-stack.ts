@@ -2,7 +2,7 @@ import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as actions from '@aws-cdk/aws-codepipeline-actions';
 import * as cdk from '@aws-cdk/core';
 import { CdkPipeline, CdkStage, SimpleSynthAction } from '@aws-cdk/pipelines';
-import { SubdomainStage } from './app-stages';
+import { SubdomainStage, DelegationRoleStage } from './app-stages';
 
 export interface PipelineStackProps extends cdk.StackProps {
   name: string;
@@ -38,6 +38,14 @@ export class PipelineStack extends cdk.Stack {
       })
     })
     
+    new DelegationRoleStage(this, 'prod', {
+      env: {
+        region: 'us-east-1',
+        account: '116907314417'
+      }
+    }
+    );
+
     const CreateSubDomains = pipeline.addStage('SubDomains');
     const devapp = new SubdomainStage(this, 'dev', {
       env: { 

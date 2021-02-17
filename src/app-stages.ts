@@ -14,3 +14,15 @@ export class SubdomainStage extends Stage {
     stackconfig);
   }
 }
+
+export class DelegationRoleStage extends Stage {
+  constructor(scope: Construct, id: string, props: StageProps) {
+    super(scope, id, props);
+
+    new DelegationRoleStage(this, 'naumenko-ca', {
+      env: {
+        region : 'us-east-1'
+      }
+    });
+  }
+}

@@ -1,7 +1,7 @@
 
 import { PublicHostedZone, CrossAccountZoneDelegationRecord } from '@aws-cdk/aws-route53';
-import { AccountPrincipal } from '@aws-cdk/aws-iam';
 import { Stack, Construct, StackProps } from '@aws-cdk/core';
+import { Role, CompositePrincipal, AccountPrincipal, ManagedPolicy, Effect, PolicyStatement } from '@aws-cdk/aws-iam'; 
 
 export class stackSettings {
   readonly stacksettings?: {
@@ -14,30 +14,53 @@ export class SubdomainsStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps, stackconfig?: stackSettings) {
     super(scope, id, props);
 
-    const zone = PublicHostedZone.fromLookup(this, 'zone', {
-      domainName: "naumenko.ca"
-    });
-
-    // In the account containing the HostedZone
-    const parentZone = new PublicHostedZone(this, 'HostedZone', {
-      zoneName: zone.zoneName,
-      // A principal which is trusted to assume a role for zone delegation
-      crossAccountZoneDelegationPrincipal: new AccountPrincipal('138847631892'),
-      comment: 'Parent zone for ' + zone.zoneName
-    });
-
+    // different account
     const subZone = new PublicHostedZone(this, 'SubZone', {
       zoneName: stackconfig?.stacksettings?.environment! + '.naumenko.ca',
       comment: 'Hosted zone for ' + stackconfig?.stacksettings?.environment!
     });
     
-    if (parentZone.crossAccountZoneDelegationRole) {
-      new CrossAccountZoneDelegationRecord(this, 'delegate', {
-        delegatedZone: subZone,
-        parentHostedZoneId: parentZone.hostedZoneId,
-        // The delegation role in the parent account
-        delegationRole: parentZone.crossAccountZoneDelegationRole
-      });
-    }
+    const delegationRole = Role.fromRoleArn(this, 'Role', 'arn:aws:iam::116907314417:role/DnsDelegation');
+
+    new CrossAccountZoneDelegationRecord(this, 'delegate', {
+      delegatedZone: subZone,
+      parentHostedZoneId: 'Z006778233ZGTMJWA18NL',
+      // The delegation role in the parent account
+      delegationRole: delegationRole
+    });
+  }
+}
+
+export class DelegationRoleStack extends Stack {
+  
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+
+    const zone = PublicHostedZone.fromLookup(this, 'zone', {
+      domainName: "naumenko.ca"
+    });
+
+    // This creates a new boundary
+    const dns_policy = new ManagedPolicy(this, 'DnsPolicy', {
+      statements: [
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ['route53:ChangeResourceRecordSets*'],
+          resources: ['arn:aws:route53:::hostedzone/' + zone.hostedZoneId ],
+        }),
+      ],
+    });
+
+
+    const delegation_role = new Role(this, 'DelegationRole', {
+    roleName: 'DnsDelegation',
+      assumedBy: new CompositePrincipal(
+        new AccountPrincipal('164411640669'),
+        new AccountPrincipal('116907314417')
+      )
+    });
+
+    dns_policy.attachToRole(delegation_role)
+    
   }
 }
