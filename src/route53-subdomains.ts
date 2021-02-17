@@ -37,7 +37,7 @@ export class DelegationRoleStack extends Stack {
     super(scope, id, props);
 
     const zone = PublicHostedZone.fromLookup(this, 'zone', {
-      domainName: "dns.naumenko.ca"
+      domainName: "dns.naumenko.ca."
     });
 
     // This creates a new boundary
@@ -45,7 +45,7 @@ export class DelegationRoleStack extends Stack {
       statements: [
         new PolicyStatement({
           effect: Effect.ALLOW,
-          actions: ['route53:ChangeResourceRecordSets*'],
+          actions: ['route53:ChangeResourceRecordSets'],
           resources: ['arn:aws:route53:::hostedzone/' + zone.hostedZoneId ],
         }),
       ],
