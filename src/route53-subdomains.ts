@@ -20,7 +20,7 @@ export class SubdomainsStack extends Stack {
       comment: 'Hosted zone for ' + stackconfig?.stacksettings?.environment!
     });
     
-    const delegationRole = Role.fromRoleArn(this, 'Role', 'arn:aws:iam::116907314417:role/DnsDelegation');
+    const delegationRole = Role.fromRoleArn(this, 'Role', 'arn:aws:iam::208334959160:role/DnsDelegation');
 
     new CrossAccountZoneDelegationRecord(this, 'delegate', {
       delegatedZone: subZone,
