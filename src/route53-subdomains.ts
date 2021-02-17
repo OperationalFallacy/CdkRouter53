@@ -41,7 +41,7 @@ export class DelegationRoleStack extends Stack {
     //   domainName: "naumenko.ca"
     // });
 
-    const zone = 'Z00775473R1PDFS2LSXJT';
+    const zone = 'Z13DSS2EHP77UM';
 
     // This creates a new boundary
     const dns_policy = new ManagedPolicy(this, 'DnsPolicy', {
