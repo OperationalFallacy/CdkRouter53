@@ -39,7 +39,7 @@ export class PipelineStack extends cdk.Stack {
     })
 
     const CreateDelegationRole = pipeline.addStage('RoleDelegation')
-    
+
     const prod_delegation_app = new DelegationRoleStage(this, 'Delegation', {
       env: {
         region: 'us-east-1',

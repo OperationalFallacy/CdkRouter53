@@ -24,7 +24,7 @@ export class SubdomainsStack extends Stack {
 
     new CrossAccountZoneDelegationRecord(this, 'delegate', {
       delegatedZone: subZone,
-      parentHostedZoneId: 'Z00775473R1PDFS2LSXJT',
+      parentHostedZoneId: 'Z13DSS2EHP77UM',
       // The delegation role in the parent account
       delegationRole: delegationRole
     });
