@@ -36,14 +36,14 @@ export class DelegationRoleStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // Pipeline can't do lookups
+    // Pipeline can't do lookups, so zone is hardcoded for time being 
     // const zone = PublicHostedZone.fromLookup(this, 'zone', {
     //   domainName: "naumenko.ca"
     // });
 
     const zone = 'Z13DSS2EHP77UM';
 
-    // This creates a new boundary
+    // This creates policy to allow sub-account make changes in tld
     const dns_policy = new ManagedPolicy(this, 'DnsPolicy', {
       statements: [
         new PolicyStatement({
